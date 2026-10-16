@@ -1,0 +1,5 @@
+menuconfig MODULES_CROSSWIND_COMPENSATOR
+	bool "crosswind_compensator"
+	default n
+	---help---
+		Enable support for crosswind_compensator

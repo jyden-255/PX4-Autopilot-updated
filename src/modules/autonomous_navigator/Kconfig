@@ -1,0 +1,5 @@
+menuconfig MODULES_AUTONOMOUS_NAVIGATOR
+	bool "autonomous_navigator"
+	default n
+	---help---
+		Enable support for autonomous_navigator

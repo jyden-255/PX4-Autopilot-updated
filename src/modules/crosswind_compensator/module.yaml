@@ -1,0 +1,47 @@
+module_name: crosswind_compensator
+actuator_output: false
+parameters:
+    - group: Crosswind Compensator
+      definitions:
+        CWC_ENABLE:
+            description: Enable crosswind compensator
+            type: int32
+            default: 1
+            min: 0
+            max: 1
+        CWC_LP_TAU:
+            description: Wind low-pass filter time constant [s]
+            type: float
+            default: 0.4
+            min: 0.05
+            max: 5.0
+        CWC_EXT_WEIGHT:
+            description: External anemometer fusion weight [0=EKF2 only, 1=anemometer only]
+            type: float
+            default: 0.6
+            min: 0.0
+            max: 1.0
+        CWC_MAX_WIND:
+            description: Maximum safe wind speed. Above this RTL is triggered [m/s]
+            type: float
+            default: 15.0
+            min: 5.0
+            max: 30.0
+        CWC_WARN_WIND:
+            description: Wind speed warning threshold [m/s]
+            type: float
+            default: 10.0
+            min: 2.0
+            max: 25.0
+        CWC_THR_BOOST_K:
+            description: Throttle boost gain per m/s of headwind
+            type: float
+            default: 0.012
+            min: 0.0
+            max: 0.05
+        CWC_CRAB_LIMIT:
+            description: Maximum crab angle correction [deg]
+            type: float
+            default: 25.0
+            min: 5.0
+            max: 45.0

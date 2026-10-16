@@ -1,0 +1,96 @@
+#!/bin/sh
+# MATEK F405-VTOL startup script
+# Applied on every boot to set hardware-specific defaults
+
+echo "MATEK F405-VTOL: loading board defaults"
+
+#──────────────────────────────────────────────────────────────────────────────
+# VTOL configuration – Standard tiltrotor (type 13)
+#──────────────────────────────────────────────────────────────────────────────
+param set-default MAV_TYPE            13   # MAV_TYPE_VTOL_TILTROTOR
+param set-default VT_TYPE              1   # 1 = tiltrotor
+param set-default VT_TRANSITION_THR  0.6
+param set-default VT_ARSP_TRANS      12.0 # [m/s] transition airspeed
+param set-default VT_ARSP_BLEND       8.0 # [m/s] begin blending
+param set-default VT_B_TRANS_DUR      4.0 # [s]   back-transition duration
+param set-default VT_F_TRANS_DUR      5.0 # [s]   forward-transition duration
+
+#──────────────────────────────────────────────────────────────────────────────
+# Airframe motor/servo mapping  (MATEK F405 PWM outputs)
+#  M1–M4: quadrotor motors   (outputs 1-4)
+#  M5–M6: tilt servos        (outputs 5-6)
+#  M7:    forward motor      (output 7, fixed-wing cruise)
+#  M8:    elevon/aileron left (output 8)
+#  M9:    elevon/aileron right(output 9)
+#──────────────────────────────────────────────────────────────────────────────
+param set-default PWM_MAIN_FUNC1   101  # Motor 1
+param set-default PWM_MAIN_FUNC2   102  # Motor 2
+param set-default PWM_MAIN_FUNC3   103  # Motor 3
+param set-default PWM_MAIN_FUNC4   104  # Motor 4
+param set-default PWM_MAIN_FUNC5   201  # Tilt servo left
+param set-default PWM_MAIN_FUNC6   202  # Tilt servo right
+param set-default PWM_MAIN_FUNC7   105  # Forward motor
+param set-default PWM_MAIN_FUNC8   401  # Aileron left
+param set-default PWM_MAIN_FUNC9   402  # Aileron right
+
+#──────────────────────────────────────────────────────────────────────────────
+# IMU / sensor orientation
+#──────────────────────────────────────────────────────────────────────────────
+param set-default SENS_BOARD_ROT   0    # No rotation  (adjust if board mounted differently)
+param set-default IMU_GYRO_RATEMAX 400  # [Hz] F405 can handle 400 Hz gyro
+
+#──────────────────────────────────────────────────────────────────────────────
+# EKF2 – enable wind estimation (needed by crosswind_compensator)
+#──────────────────────────────────────────────────────────────────────────────
+param set-default EKF2_WIND_NSD    1.0e-2  # Wind process noise
+param set-default EKF2_ARSP_THR    2.0     # Min airspeed for wind fusion
+param set-default EKF2_FUSE_BETA   1       # Fuse sideslip for wind
+
+#──────────────────────────────────────────────────────────────────────────────
+# Crosswind Compensator (module: crosswind_compensator)
+#──────────────────────────────────────────────────────────────────────────────
+param set-default CWC_ENABLE       1       # 0=off, 1=on
+param set-default CWC_LP_TAU       0.4     # [s] low-pass filter time constant
+param set-default CWC_EXT_WEIGHT   0.6     # external anemometer weight [0..1]
+param set-default CWC_MAX_WIND     15.0    # [m/s] absolute limit → triggers RTL
+param set-default CWC_WARN_WIND    10.0    # [m/s] warning threshold
+param set-default CWC_THR_BOOST_K  0.012  # throttle boost per m/s headwind
+param set-default CWC_CRAB_LIMIT   25.0    # [deg] max crab angle
+
+#──────────────────────────────────────────────────────────────────────────────
+# Autonomous Navigator (module: autonomous_navigator)
+#──────────────────────────────────────────────────────────────────────────────
+param set-default AN_REPLAN_INTERVAL  30.0 # [s] wind-driven re-plan interval
+param set-default AN_WIND_COST_K       0.5 # headwind cost multiplier
+param set-default AN_GCS_TIMEOUT      10.0 # [s] before GCS considered lost
+param set-default AN_GPS_TIMEOUT       5.0 # [s] before GPS considered lost
+param set-default AN_FULL_AUTO         0   # 0=require human approval, 1=full auto
+param set-default AN_APPROVAL_TO      10.0 # [s] approval timeout (full-auto only)
+
+#──────────────────────────────────────────────────────────────────────────────
+# Safety / Failsafe
+#──────────────────────────────────────────────────────────────────────────────
+param set-default COM_RC_LOSS_T    1.0     # [s] RC loss → failsafe
+param set-default COM_DL_LOSS_T   10.0    # [s] datalink loss → failsafe
+param set-default NAV_RCL_ACT      3      # RC loss action: 3=RTL
+param set-default NAV_DLL_ACT      2      # Datalink loss action: 2=RTL
+param set-default NAV_LOITER_RAD  50.0    # [m] loiter radius
+param set-default RTL_RETURN_ALT  50.0    # [m] RTL return altitude
+
+#──────────────────────────────────────────────────────────────────────────────
+# Battery
+#──────────────────────────────────────────────────────────────────────────────
+param set-default BAT1_N_CELLS     4      # 4S LiPo
+param set-default BAT1_V_EMPTY     3.5    # [V/cell] empty voltage
+param set-default BAT1_V_CHARGED   4.2    # [V/cell] full voltage
+param set-default BAT1_CAPACITY    5000   # [mAh]
+param set-default COM_LOW_BAT_ACT  2      # Low battery: RTL
+
+#──────────────────────────────────────────────────────────────────────────────
+# Geofence
+#──────────────────────────────────────────────────────────────────────────────
+param set-default GF_ACTION        2      # 0=none,1=warn,2=loiter,3=RTL,4=terminate
+param set-default GF_MAX_HOR_DIST  500    # [m] horizontal geofence radius
+param set-default GF_MAX_VER_DIST  120    # [m] max altitude
+
+echo "MATEK F405-VTOL: board defaults loaded OK"

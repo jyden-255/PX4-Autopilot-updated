@@ -1,0 +1,47 @@
+module_name: autonomous_navigator
+actuator_output: false
+parameters:
+    - group: Autonomous Navigator
+      definitions:
+        AN_REPLAN_INTERVAL:
+            description: Seconds between wind-driven Dijkstra replanning runs [s]
+            type: float
+            default: 30.0
+            min: 5.0
+            max: 300.0
+        AN_WIND_COST_K:
+            description: Headwind cost multiplier for path planning
+            type: float
+            default: 0.5
+            min: 0.0
+            max: 5.0
+        AN_GCS_TIMEOUT:
+            description: GCS heartbeat timeout before offline mode [s]
+            type: float
+            default: 10.0
+            min: 2.0
+            max: 60.0
+        AN_GPS_TIMEOUT:
+            description: GPS validity timeout before offline mode [s]
+            type: float
+            default: 5.0
+            min: 1.0
+            max: 30.0
+        AN_FULL_AUTO:
+            description: "0: require human approval for each leg. 1: full autonomous"
+            type: int32
+            default: 0
+            min: 0
+            max: 1
+        AN_APPROVAL_TO:
+            description: Approval timeout in full-auto mode [s]
+            type: float
+            default: 10.0
+            min: 3.0
+            max: 60.0
+        AN_ALLOW_SKIP:
+            description: "0: fly every mission waypoint in order (safe default). 1: point-to-point routing that may skip waypoints closer than 500 m"
+            type: int32
+            default: 0
+            min: 0
+            max: 1
